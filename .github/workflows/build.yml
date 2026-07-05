@@ -1,0 +1,62 @@
+name: Build Scan Push
+
+on:
+  push:
+    branches:
+      - main
+
+
+permissions:
+  id-token: write
+  contents: read
+
+
+env:
+  IMAGE_NAME: cwpp-app
+
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v4
+
+
+    - name: Azure Login OIDC
+      uses: azure/login@v2
+
+      with:
+        client-id: ${{ secrets.AZURE_CLIENT_ID }}
+        tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+        subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+
+    - name: ACR Login
+      run: |
+        az acr login \
+        --name ${{ secrets.ACR_LOGIN_SERVER }}
+
+
+    - name: Build Docker Image
+      run: |
+        docker build -f app/Dockerfile -t ${{ secrets.ACR_LOGIN_SERVER }}/cwpp-app:${{ github.sha }} app
+
+    - name: Trivy Scan
+      uses: aquasecurity/trivy-action@master
+
+      with:
+        image-ref: ${{ secrets.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+        severity: HIGH,CRITICAL
+        exit-code: 0
+
+
+    - name: Push Image
+      run: |
+        docker push \
+        ${{ secrets.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
