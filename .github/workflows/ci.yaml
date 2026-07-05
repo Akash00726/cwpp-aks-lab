@@ -11,6 +11,7 @@ on:
 permissions:
   id-token: write
   contents: write
+  pull-requests: write
 
 
 env:
@@ -76,16 +77,27 @@ jobs:
         helm/flask-app/values-dev.yaml
 
 
-    - name: Commit Helm Update
-      run: |
+    - name: Create Pull Request
+      uses: peter-evans/create-pull-request@v6
 
-        git config user.name "github-actions"
-        git config user.email "github-actions@github.com"
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
 
-        git add helm/flask-app/values-dev.yaml
+        commit-message: "Update image tag ${{ github.sha }}"
 
-        git commit \
-        -m "Image Changes Detected|Update image tag ${{ github.sha }}" \
-        || echo "No changes"
+        branch: image-update-${{ github.sha }}
 
-        git push
+        title: "Deploy image ${{ github.sha }}"
+
+        body: |
+          Automated image update.
+        Image:
+          `${{ secrets.ACR_LOGIN_SERVER }}/cwpp-app:${{ github.sha }}`
+
+        Changes:
+        - Updated Helm values-dev.yaml
+        - Ready for Argo deployment after merge
+
+      add-paths: |
+        helm/flask-app/values-dev.yaml
+      
