@@ -41,7 +41,7 @@ jobs:
 
     - name: Login ACR
       run: |
-        az acr login --name ${{ secrets.ACR_NAME }}
+        az acr login --name ${{ secrets.ACR_LOGIN_SERVER }}
 
 
     - name: Build Docker Image
