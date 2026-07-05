@@ -23,8 +23,6 @@ spec:
 
     spec:
       serviceAccountName: {{ include "flask.name" . }}-sa
-      imagePullSecrets:
-      - name: acr-secret
       securityContext:
       {{- toYaml .Values.SecurityContext | nindent 8 }}
 

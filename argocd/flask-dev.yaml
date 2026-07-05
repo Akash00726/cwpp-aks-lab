@@ -13,7 +13,7 @@ spec:
 
   source:
 
-    repoURL: https://github.com/Akash00726/cwpp-home-lab.git
+    repoURL: https://github.com/Akash00726/cwpp-aks-lab
 
     targetRevision: main
 
