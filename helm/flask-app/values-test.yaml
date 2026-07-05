@@ -1,0 +1,53 @@
+replicaCount: 2
+namespace: cwpp-test
+image:
+  repository: cwpp-app
+  tag: v3
+  pullPolicy: Never
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 5000
+  name: flask-service-test
+
+config:
+  name: flask-config-lab
+  APP_NAME: "CWPP Lab"
+  APP_ENV: "LAB"
+  APP_VERSION: "1.0"
+  LOG_LEVEL: "INFO"
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+  limits:
+    cpu: 500m
+    memory: 256Mi
+
+SecurityContext:
+  runAsNonRoot: true
+  runAsUser: 10001
+  runAsGroup: 10001
+  fsGroup: 10001
+
+podsecurityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: false
+
+  capabilities:
+    drop:
+      - ALL
+
+probes:
+  readiness:
+    path: /
+    initialDelaySeconds: 5
+    periodSeconds: 10
+
+  liveness:
+    path: /
+    initialDelaySeconds: 10
+    periodSeconds: 20

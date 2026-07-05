@@ -1,0 +1,18 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+
+metadata:
+  name: {{ include "flask.name" . }}-binding
+  namespace: {{ .Values.Namespace }}
+
+subjects:
+
+- kind: ServiceAccount
+  name: {{ include "flask.name" . }}-sa
+  namespace: {{ .Values.Namespace }}
+
+roleRef:
+
+  kind: Role
+  name: {{ include "flask.name" . }}-role
+  apiGroup: rbac.authorization.k8s.io

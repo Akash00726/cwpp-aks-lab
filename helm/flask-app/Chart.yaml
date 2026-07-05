@@ -1,0 +1,11 @@
+apiVersion: v2
+
+name: flask-app
+
+description: CWPP Home Lab Flask Application
+
+type: application
+
+version: 1.0.1
+
+appVersion: "v3"

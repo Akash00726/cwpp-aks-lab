@@ -1,0 +1,48 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+
+metadata:
+  name: flask-dev
+  namespace: argocd
+
+
+spec:
+
+  project: default
+
+
+  source:
+
+    repoURL: https://github.com/Akash00726/cwpp-home-lab.git
+
+    targetRevision: main
+
+    path: helm/flask-app
+
+
+    helm:
+
+      valueFiles:
+
+      - values-dev.yaml
+
+
+  destination:
+
+    server: https://kubernetes.default.svc
+
+    namespace: cwpp-dev
+
+
+  syncPolicy:
+
+    automated:
+
+      prune: true
+
+      selfHeal: true
+
+
+    syncOptions:
+
+    - CreateNamespace=true

@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: {{ include "flask.name" . }}
+  namespace: {{ .Values.namespace }}
+
+spec:
+  replicas: {{ .Values.replicaCount }}
+
+  selector:
+    matchLabels:
+      app: flask
+
+  template:
+    metadata:
+      labels:
+        app: flask
+      annotations:
+        vault.hashicorp.com/agent-inject: "true"
+        vault.hashicorp.com/role: "{{ .Values.vault.role }}"
+        vault.hashicorp.com/agent-inject-secret-database: "secret/data/flask"
+
+    spec:
+      serviceAccountName: {{ include "flask.name" . }}-sa
+      imagePullSecrets:
+      - name: acr-secret
+      securityContext:
+      {{- toYaml .Values.SecurityContext | nindent 8 }}
+
+      containers:
+      - name: flask
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy}}
+
+        envFrom:
+        - configMapRef:
+            name: {{ .Values.config.name }}
+
+        ports:
+        - containerPort: 5000
+
+        resources:
+        {{- toYaml .Values.resources | nindent 10 }}
+
+        readinessProbe:
+          httpGet:
+            path: {{ .Values.probes.readiness.path }}
+            port: 5000
+          initialDelaySeconds: {{ .Values.probes.readiness.initialDelaySeconds }}
+          periodSeconds: {{ .Values.probes.readiness.periodSeconds }}
+
+        livenessProbe:
+          httpGet:
+            path: {{ .Values.probes.liveness.path }}
+            port: 5000
+          initialDelaySeconds: {{ .Values.probes.liveness.initialDelaySeconds }}
+          periodSeconds: {{ .Values.probes.liveness.periodSeconds }}
+
+        securityContext:
+        {{- toYaml .Values.podsecurityContext | nindent 10 }}
