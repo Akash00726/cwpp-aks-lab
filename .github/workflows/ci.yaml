@@ -6,7 +6,7 @@ on:
       - main
     paths:
       - 'app/**'
-      - '.github/workflows/ci.yml'
+      - '.github/workflows/ci.yaml'
 
 permissions:
   id-token: write
