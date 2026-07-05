@@ -5,7 +5,7 @@ vault:
   role: flask-role
 image:
   repository: cwpplabacr123.azurecr.io/cwpp-app
-  tag: 07d7e45793eccafc8679928fa120ab57c926cece
+  tag: 62342ab5fa8f779c6851d82a620205373ebee1d6
   pullPolicy: Always
 
 service:
