@@ -4,8 +4,9 @@ on:
   push:
     branches:
       - main
-    paths-ignore:
-      - 'helm/**'
+    paths:
+      - 'app/**'
+      - '.github/workflows/ci.yml'
 
 permissions:
   id-token: write
@@ -84,7 +85,7 @@ jobs:
         git add helm/flask-app/values-dev.yaml
 
         git commit \
-        -m "Update image tag ${{ github.sha }}" \
+        -m "Image Changes Detected|Update image tag ${{ github.sha }}" \
         || echo "No changes"
 
         git push
