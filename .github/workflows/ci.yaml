@@ -91,13 +91,13 @@ jobs:
 
         body: |
           Automated image update.
-        Image:
-          ${{ secrets.ACR_LOGIN_SERVER }}/cwpp-app:${{ github.sha }}
+          Image:
+            ${{ secrets.ACR_LOGIN_SERVER }}/cwpp-app:${{ github.sha }}
 
-        Changes:
-        - Updated Helm values-dev.yaml
-        - Ready for Argo deployment after merge
+          Changes:
+          - Updated Helm values-dev.yaml
+          - Ready for Argo deployment after merge
 
-      add-paths: |
-        helm/flask-app/values-dev.yaml
+        add-paths: |
+          helm/flask-app/values-dev.yaml
       
