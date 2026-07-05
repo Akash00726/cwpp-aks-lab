@@ -92,7 +92,7 @@ jobs:
         body: |
           Automated image update.
         Image:
-          `${{ secrets.ACR_LOGIN_SERVER }}/cwpp-app:${{ github.sha }}`
+          ${{ secrets.ACR_LOGIN_SERVER }}/cwpp-app:${{ github.sha }}
 
         Changes:
         - Updated Helm values-dev.yaml
