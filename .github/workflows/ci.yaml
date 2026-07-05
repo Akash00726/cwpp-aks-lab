@@ -1,0 +1,90 @@
+name: CI Build Push Update Helm
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - 'helm/**'
+
+permissions:
+  id-token: write
+  contents: write
+
+
+env:
+  IMAGE_NAME: cwpp-app
+
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+
+
+    - name: Azure Login OIDC
+      uses: azure/login@v2
+
+      with:
+        client-id: ${{ secrets.AZURE_CLIENT_ID }}
+        tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+        subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+
+    - name: Login ACR
+      run: |
+        az acr login --name ${{ secrets.ACR_NAME }}
+
+
+    - name: Build Docker Image
+      run: |
+        docker build \
+        -f app/Dockerfile \
+        -t ${{ secrets.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ github.sha }} \
+        app
+
+
+    - name: Trivy Audit Scan
+      uses: aquasecurity/trivy-action@master
+
+      with:
+        image-ref: ${{ secrets.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+        severity: HIGH,CRITICAL
+        exit-code: 0
+
+
+    - name: Push Docker Image
+      run: |
+        docker push \
+        ${{ secrets.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+
+
+    - name: Update Helm Image Tag
+      run: |
+
+        sed -i \
+        "s/tag:.*/tag: ${{ github.sha }}/" \
+        helm/flask-app/values-dev.yaml
+
+
+    - name: Commit Helm Update
+      run: |
+
+        git config user.name "github-actions"
+        git config user.email "github-actions@github.com"
+
+        git add helm/flask-app/values-dev.yaml
+
+        git commit \
+        -m "Update image tag ${{ github.sha }}" \
+        || echo "No changes"
+
+        git push

@@ -1,9 +1,7 @@
 name: Build Scan Push
 
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
 
 
 permissions:
