@@ -1,20 +1,61 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-    <title>{{ app_name }}</title>
+    <title>CWPP AKS Lab</title>
 </head>
 
 <body>
 
-<h1>{{ app_name }}- AKSSSSSS_autoupdate PR----ARGOOOOOOOOOOOOOOOOOOOOOOOO</h1>
+<h1>{{ app_name }}</h1>
 
-<p>Hostname: {{ hostname }}</p>
+<h2>AKS GitOps Demo</h2>
 
-<p>Environment: {{ app_env }}</p>
+<hr>
 
-<p>Version: {{ app_version }}</p>
+<table border="1" cellpadding="10">
 
-<p>Log Level: {{ log_level }}</p>
+<tr>
+<td><b>Environment</b></td>
+<td>{{ app_env }}</td>
+</tr>
+
+<tr>
+<td><b>Application Version</b></td>
+<td>{{ app_version }}</td>
+</tr>
+
+<tr>
+<td><b>Git Commit</b></td>
+<td>{{ git_commit }}</td>
+</tr>
+
+<tr>
+<td><b>Image Tag</b></td>
+<td>{{ image_tag }}</td>
+</tr>
+
+<tr>
+<td><b>Pod Name</b></td>
+<td>{{ hostname }}</td>
+</tr>
+
+<tr>
+<td><b>Namespace</b></td>
+<td>{{ namespace }}</td>
+</tr>
+
+<tr>
+<td><b>Node</b></td>
+<td>{{ node_name }}</td>
+</tr>
+
+<tr>
+<td><b>Current Time</b></td>
+<td>{{ current_date }}</td>
+</tr>
+
+</table>
 
 </body>
 </html>
