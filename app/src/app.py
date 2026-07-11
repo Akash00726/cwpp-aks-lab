@@ -1,21 +1,22 @@
-import os
 from flask import Flask, render_template
-import socket
-app_name = os.getenv("APP_NAME", "Default App")
-app_env = os.getenv("APP_ENV", "Development")
-app_version = os.getenv("APP_VERSION", "1.0")
-log_level = os.getenv("LOG_LEVEL", "INFO")
+from datetime import datetime
+import os
+
 app = Flask(__name__)
 
 @app.route("/")
 def home():
     return render_template(
         "index.html",
-        hostname=socket.gethostname(),
-        app_name=app_name,
-        app_env=app_env,
-        app_version=app_version,
-        log_level=log_level
+        current_date=datetime.now().strftime("%d-%b-%Y %H:%M:%S"),
+        hostname=os.getenv("HOSTNAME", "Unknown"),
+        app_name=os.getenv("APP_NAME", "CWPP Lab"),
+        app_env=os.getenv("APP_ENV", "Development"),
+        app_version=os.getenv("APP_VERSION", "1.0"),
+        git_commit=os.getenv("GIT_COMMIT", "N/A"),
+        image_tag=os.getenv("IMAGE_TAG", "N/A"),
+        namespace=os.getenv("NAMESPACE", "Unknown"),
+        node_name=os.getenv("NODE_NAME", "Unknown")
     )
 
 if __name__ == "__main__":
