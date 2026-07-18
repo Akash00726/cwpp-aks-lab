@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: wi-test
+  namespace: cwpp-dev
+  labels:
+    azure.workload.identity/use: "true"
+spec:
+  serviceAccountName: flask-sa
+
+  containers:
+  - name: azure-cli
+    image: mcr.microsoft.com/azure-cli:latest
+
+    command:
+      - sleep
+      - infinity

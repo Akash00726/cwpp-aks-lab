@@ -75,7 +75,7 @@ spec:
                 fieldPath: metadata.namespace
 
           - name: GIT_COMMIT
-            value: "{{ .Values.gitCommit }}"
+            value: "{{ .Values.image.tag }}"
 
           - name: IMAGE_TAG
             value: "{{ .Values.image.tag }}"  

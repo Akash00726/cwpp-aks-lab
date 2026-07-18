@@ -72,9 +72,7 @@ jobs:
     - name: Update Helm Image Tag
       run: |
 
-        sed -i \
-        "s/tag:.*/tag: ${{ github.sha }}/" \
-        helm/flask-app/values-dev.yaml
+        yq -i '.image.tag = "${{ github.sha }}"' helm/flask-app/values-dev.yaml
 
 
     - name: Create Pull Request
@@ -83,7 +81,7 @@ jobs:
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
 
-        commit-message: "Update image tag ${{ github.sha }}"
+        commit-message: "${{ github.sha }}"
 
         branch: image-update-${{ github.sha }}
 
